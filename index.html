@@ -74,14 +74,20 @@
                 </div>
 
                 <!-- Controls Section -->
-                <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <select id="language-select" class="w-full sm:w-64 bg-slate-700 text-white border-2 border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200">
-                        <option value="de">Deutsch</option>
-                        <option value="en">Englisch</option>
-                        <option value="fr">Französisch</option>
-                        <option value="it">Italienisch</option>
-                        <option value="es">Spanisch</option>
-                    </select>
+              <div class="relative w-full sm:w-64">
+    <select id="language-select" class="w-full appearance-none bg-slate-700 text-white border-2 border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200">
+        <option value="de">Deutsch</option>
+        <option value="en">Englisch</option>
+        <option value="fr">Französisch</option>
+        <option value="it">Italienisch</option>
+        <option value="es">Spanisch</option>
+    </select>
+    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+        <svg class="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+        </svg>
+    </div>
+</div>
                     <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <button id="translate-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-105 shadow-lg">
                             Übersetzen
@@ -319,4 +325,5 @@ async function handleTranslation() {
     </script>
 </body>
 </html>
+
 
