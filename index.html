@@ -148,67 +148,74 @@
         // --- Translation Logic ---
         translateBtn.addEventListener('click', handleTranslation);
 
-        async function handleTranslation() {
-            const htmlString = htmlInput.value;
-            const targetLanguage = languageSelect.value;
-            if (!htmlString.trim()) {
-                showError("Bitte geben Sie HTML-Code ein oder ziehen Sie eine Datei per Drag & Drop.");
-                return;
-            }
+async function handleTranslation() {
+    const htmlString = htmlInput.value;
+    const targetLanguage = languageSelect.value;
+    if (!htmlString.trim()) {
+        showError("Bitte geben Sie HTML-Code ein oder ziehen Sie eine Datei per Drag & Drop.");
+        return;
+    }
 
-            loader.classList.remove('hidden');
-            htmlOutput.textContent = '';
-            hideError();
+    loader.classList.remove('hidden');
+    htmlOutput.textContent = '';
+    hideError();
 
-            try {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlString, 'text/html');
-                const textNodes = [];
-                const textsToTranslate = [];
-                
-                function walk(node) {
-                    if (node.nodeType === 3) { // Text node
-                        const text = node.nodeValue.trim();
-                        if (text.length > 0 && node.parentElement.nodeName !== 'SCRIPT' && node.parentElement.nodeName !== 'STYLE') {
-                            textNodes.push(node);
-                            textsToTranslate.push(text);
-                        }
-                    } else if (node.nodeType === 1) { // Element node
-                        for (let i = 0; i < node.childNodes.length; i++) {
-                            walk(node.childNodes[i]);
-                        }
-                    }
+    try {
+        // Create a temporary container to parse the HTML fragment
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = htmlString;
+
+        const textNodes = [];
+        const textsToTranslate = [];
+        
+        // The walk function remains the same
+        function walk(node) {
+            if (node.nodeType === 3) { // Text node
+                const text = node.nodeValue.trim();
+                if (text.length > 0 && node.parentElement.nodeName !== 'SCRIPT' && node.parentElement.nodeName !== 'STYLE') {
+                    textNodes.push(node);
+                    textsToTranslate.push(text);
                 }
-
-                walk(doc.documentElement);
-
-                if (textsToTranslate.length === 0) {
-                    htmlOutput.textContent = htmlString;
-                    loader.classList.add('hidden');
-                    return;
+            } else if (node.nodeType === 1) { // Element node
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    walk(node.childNodes[i]);
                 }
-
-                const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
-                const translatedTexts = await Promise.all(translationPromises);
-                
-                textNodes.forEach((node, index) => {
-                    const originalText = node.nodeValue;
-                    const trimmedOriginal = originalText.trim();
-                    const translatedText = translatedTexts[index] || '';
-                    node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
-                });
-
-                const finalHtml = `<!DOCTYPE html>\n` + doc.documentElement.outerHTML;
-                htmlOutput.textContent = finalHtml;
-
-            } catch (error) {
-                console.error('Übersetzung fehlgeschlagen:', error);
-                showError("Übersetzung fehlgeschlagen: " + error.message);
-                htmlOutput.textContent = htmlString;
-            } finally {
-                loader.classList.add('hidden');
             }
         }
+
+        // Start walking from our temporary container
+        walk(tempContainer);
+
+        if (textsToTranslate.length === 0) {
+            htmlOutput.textContent = htmlString;
+            loader.classList.add('hidden');
+            return;
+        }
+
+        const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
+        const translatedTexts = await Promise.all(translationPromises);
+        
+        textNodes.forEach((node, index) => {
+            const originalText = node.nodeValue;
+            const trimmedOriginal = originalText.trim();
+            const translatedText = translatedTexts[index] || '';
+            // Use a regex with a global flag to replace all occurrences if needed,
+            // though for text nodes this is usually safe.
+            node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
+        });
+
+        // Get the HTML from the container, which does NOT include the container itself
+        const finalHtml = tempContainer.innerHTML;
+        htmlOutput.textContent = finalHtml;
+
+    } catch (error) {
+        console.error('Übersetzung fehlgeschlagen:', error);
+        showError("Übersetzung fehlgeschlagen: " + error.message);
+        htmlOutput.textContent = htmlString; // Show original on failure
+    } finally {
+        loader.classList.add('hidden');
+    }
+}
 
         async function translateText(text, targetLang) {
             // Switched to a more reliable public API endpoint that properly handles auto-detection.
@@ -312,3 +319,4 @@
     </script>
 </body>
 </html>
+
