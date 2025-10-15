@@ -49,7 +49,6 @@
 
             <main>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                    <!-- Input Section -->
                     <div class="flex flex-col">
                         <label for="html-input" class="text-lg font-semibold mb-3 text-white">Original-Code</label>
                         <div id="drop-zone" class="relative w-full h-96 flex-grow bg-slate-900 text-slate-300 border-2 border-dashed border-slate-600 rounded-lg p-4 transition-all duration-300">
@@ -60,7 +59,6 @@
                         </div>
                     </div>
                     
-                    <!-- Output Section -->
                     <div class="flex flex-col">
                         <label for="html-output" class="text-lg font-semibold mb-3 text-white">Übersetzter Code</label>
                         <div id="output-container" class="relative w-full h-96 flex-grow bg-slate-900 border-2 border-slate-700 rounded-lg">
@@ -73,21 +71,21 @@
                     </div>
                 </div>
 
-                <!-- Controls Section -->
-              <div class="relative w-full sm:w-64">
-    <select id="language-select" class="w-full appearance-none bg-slate-700 text-white border-2 border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200">
-        <option value="de">Deutsch</option>
-        <option value="en">Englisch</option>
-        <option value="fr">Französisch</option>
-        <option value="it">Italienisch</option>
-        <option value="es">Spanisch</option>
-    </select>
-    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-        <svg class="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-        </svg>
-    </div>
-</div>
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="relative w-full sm:w-64">
+                        <select id="language-select" class="w-full appearance-none bg-slate-700 text-white border-2 border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200">
+                            <option value="de">Deutsch</option>
+                            <option value="en">Englisch</option>
+                            <option value="fr">Französisch</option>
+                            <option value="it">Italienisch</option>
+                            <option value="es">Spanisch</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                            <svg class="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                            </svg>
+                        </div>
+                    </div>
                     <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <button id="translate-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-105 shadow-lg">
                             Übersetzen
@@ -98,8 +96,7 @@
                         </button>
                     </div>
                 </div>
-                 <!-- Error Message Display -->
-                <div id="error-message" class="mt-4 text-center text-red-400 font-semibold hidden min-h-[1.5rem]"></div>
+                 <div id="error-message" class="mt-4 text-center text-red-400 font-semibold hidden min-h-[1.5rem]"></div>
             </main>
         </div>
         <footer class="mt-6 text-slate-500 text-sm flex justify-between items-center px-2">
@@ -154,77 +151,74 @@
         // --- Translation Logic ---
         translateBtn.addEventListener('click', handleTranslation);
 
-async function handleTranslation() {
-    const htmlString = htmlInput.value;
-    const targetLanguage = languageSelect.value;
-    if (!htmlString.trim()) {
-        showError("Bitte geben Sie HTML-Code ein oder ziehen Sie eine Datei per Drag & Drop.");
-        return;
-    }
+        async function handleTranslation() {
+            const htmlString = htmlInput.value;
+            const targetLanguage = languageSelect.value;
+            if (!htmlString.trim()) {
+                showError("Bitte geben Sie HTML-Code ein oder ziehen Sie eine Datei per Drag & Drop.");
+                return;
+            }
 
-    loader.classList.remove('hidden');
-    htmlOutput.textContent = '';
-    hideError();
+            loader.classList.remove('hidden');
+            htmlOutput.textContent = '';
+            hideError();
 
-    try {
-        // Create a temporary container to parse the HTML fragment
-        const tempContainer = document.createElement('div');
-        tempContainer.innerHTML = htmlString;
+            try {
+                // KORREKTUR: Verwende ein temporäres div-Element statt DOMParser,
+                // um das Hinzufügen von <html>, <head>, <body> zu vermeiden.
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = htmlString;
 
-        const textNodes = [];
-        const textsToTranslate = [];
-        
-        // The walk function remains the same
-        function walk(node) {
-            if (node.nodeType === 3) { // Text node
-                const text = node.nodeValue.trim();
-                if (text.length > 0 && node.parentElement.nodeName !== 'SCRIPT' && node.parentElement.nodeName !== 'STYLE') {
-                    textNodes.push(node);
-                    textsToTranslate.push(text);
+                const textNodes = [];
+                const textsToTranslate = [];
+                
+                function walk(node) {
+                    if (node.nodeType === 3) { // Text node
+                        const text = node.nodeValue.trim();
+                        if (text.length > 0 && node.parentElement.nodeName !== 'SCRIPT' && node.parentElement.nodeName !== 'STYLE') {
+                            textNodes.push(node);
+                            textsToTranslate.push(text);
+                        }
+                    } else if (node.nodeType === 1) { // Element node
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            walk(node.childNodes[i]);
+                        }
+                    }
                 }
-            } else if (node.nodeType === 1) { // Element node
-                for (let i = 0; i < node.childNodes.length; i++) {
-                    walk(node.childNodes[i]);
+
+                // KORREKTUR: Starte die Traversierung vom temporären Container.
+                walk(tempContainer);
+
+                if (textsToTranslate.length === 0) {
+                    htmlOutput.textContent = htmlString;
+                    loader.classList.add('hidden');
+                    return;
                 }
+
+                const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
+                const translatedTexts = await Promise.all(translationPromises);
+                
+                textNodes.forEach((node, index) => {
+                    const originalText = node.nodeValue;
+                    const trimmedOriginal = originalText.trim();
+                    const translatedText = translatedTexts[index] || '';
+                    node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
+                });
+                
+                // KORREKTUR: Gib nur den Inhalt des Containers zurück, um die originale Struktur zu erhalten.
+                const finalHtml = tempContainer.innerHTML;
+                htmlOutput.textContent = finalHtml;
+
+            } catch (error) {
+                console.error('Übersetzung fehlgeschlagen:', error);
+                showError("Übersetzung fehlgeschlagen: " + error.message);
+                htmlOutput.textContent = htmlString;
+            } finally {
+                loader.classList.add('hidden');
             }
         }
 
-        // Start walking from our temporary container
-        walk(tempContainer);
-
-        if (textsToTranslate.length === 0) {
-            htmlOutput.textContent = htmlString;
-            loader.classList.add('hidden');
-            return;
-        }
-
-        const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
-        const translatedTexts = await Promise.all(translationPromises);
-        
-        textNodes.forEach((node, index) => {
-            const originalText = node.nodeValue;
-            const trimmedOriginal = originalText.trim();
-            const translatedText = translatedTexts[index] || '';
-            // Use a regex with a global flag to replace all occurrences if needed,
-            // though for text nodes this is usually safe.
-            node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
-        });
-
-        // Get the HTML from the container, which does NOT include the container itself
-        const finalHtml = tempContainer.innerHTML;
-        htmlOutput.textContent = finalHtml;
-
-    } catch (error) {
-        console.error('Übersetzung fehlgeschlagen:', error);
-        showError("Übersetzung fehlgeschlagen: " + error.message);
-        htmlOutput.textContent = htmlString; // Show original on failure
-    } finally {
-        loader.classList.add('hidden');
-    }
-}
-
         async function translateText(text, targetLang) {
-            // Switched to a more reliable public API endpoint that properly handles auto-detection.
             const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
             
             try {
@@ -234,9 +228,7 @@ async function handleTranslation() {
                 }
                 const data = await response.json();
                 
-                // The response is a nested array. The translated text is in the first element.
                 if (data && data[0] && data[0][0] && data[0][0][0]) {
-                    // Sometimes the API returns multiple segments, join them.
                     let translatedText = '';
                     data[0].forEach(segment => {
                         if (segment[0]) {
@@ -246,11 +238,10 @@ async function handleTranslation() {
                     return translatedText;
                 } else {
                     console.warn('Übersetzungs-Snippet fehlgeschlagen, Original wird zurückgegeben:', data);
-                    return text; // Return original text if translation is not found
+                    return text;
                 }
             } catch (error) {
                  console.error('API-Aufruf für Snippet fehlgeschlagen:', text, error);
-                 // On error, return original text to avoid breaking the document structure.
                  return text;
             }
         }
@@ -312,7 +303,9 @@ async function handleTranslation() {
                 showError("Download fehlgeschlagen: " + error.message);
                 console.error("Download-Fehler:", error);
             }
-        }); // Marquee Title Effect
+        });
+        
+        // Marquee Title Effect
         (function() {
             const originalTitle = document.title + " ";
             let titleText = originalTitle;
@@ -320,10 +313,8 @@ async function handleTranslation() {
                 titleText = titleText.substring(1, titleText.length) + titleText.substring(0, 1);
                 document.title = titleText;
             }
-            setInterval(marquee, 300); // Speed in milliseconds
+            setInterval(marquee, 300);
         })();
     </script>
 </body>
 </html>
-
-
