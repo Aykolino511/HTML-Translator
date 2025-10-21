@@ -44,11 +44,12 @@
         <div class="bg-slate-800 rounded-xl shadow-2xl p-6 sm:p-8 border border-slate-700">
             <header class="text-center mb-8">
                 <h1 class="text-3xl sm:text-4xl font-bold text-white">HTML Translator Pro</h1>
-                <p class="text-slate-400 mt-2">HTML-Struktur bleibt garantiert erhalten - nur der Text wird übersetzt.</p>
+                <p class="text-slate-400 mt-2">Übersetzt Textinhalte und passt Domain-Endungen (.de, .com etc.) in Links automatisch an.</p>
             </header>
 
             <main>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                    <!-- Input Section -->
                     <div class="flex flex-col">
                         <label for="html-input" class="text-lg font-semibold mb-3 text-white">Original-Code</label>
                         <div id="drop-zone" class="relative w-full h-96 flex-grow bg-slate-900 text-slate-300 border-2 border-dashed border-slate-600 rounded-lg p-4 transition-all duration-300">
@@ -59,6 +60,7 @@
                         </div>
                     </div>
                     
+                    <!-- Output Section -->
                     <div class="flex flex-col">
                         <label for="html-output" class="text-lg font-semibold mb-3 text-white">Übersetzter Code</label>
                         <div id="output-container" class="relative w-full h-96 flex-grow bg-slate-900 border-2 border-slate-700 rounded-lg">
@@ -71,6 +73,7 @@
                     </div>
                 </div>
 
+                <!-- Controls Section -->
                 <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="relative w-full sm:w-64">
                         <select id="language-select" class="w-full appearance-none bg-slate-700 text-white border-2 border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200">
@@ -100,7 +103,7 @@
             </main>
         </div>
         <footer class="mt-6 text-slate-500 text-sm flex justify-between items-center px-2">
-            <div>Version 1.06</div>
+            <div>Version 1.07</div>
             <div>©AykolinoApps</div>
         </footer>
     </div>
@@ -142,7 +145,6 @@
         });
         
         htmlInput.addEventListener('input', updatePlaceholder);
-
         function updatePlaceholder() {
              dropZonePlaceholder.style.display = htmlInput.value.length > 0 ? 'none' : 'flex';
         }
@@ -164,14 +166,27 @@
             hideError();
 
             try {
-                // KORREKTUR: Verwende ein temporäres div-Element statt DOMParser,
-                // um das Hinzufügen von <html>, <head>, <body> zu vermeiden.
                 const tempContainer = document.createElement('div');
                 tempContainer.innerHTML = htmlString;
 
                 const textNodes = [];
                 const textsToTranslate = [];
                 
+                // Helper function to update link TLDs
+                function updateLink(url, targetLang) {
+                    const tldMap = { de: '.de', en: '.com', fr: '.fr', it: '.it', es: '.es' };
+                    const targetTld = tldMap[targetLang];
+                    if (!targetTld) return url;
+
+                    // Regex to find common TLDs at the end of a domain.
+                    // Ensures that only absolute URLs are changed.
+                    const tldRegex = /\.(de|com|fr|it|es|org|net|io|co|uk)(?=\/|$)/;
+                    if (url.startsWith('http://') || url.startsWith('https://')) {
+                        return url.replace(tldRegex, targetTld);
+                    }
+                    return url;
+                }
+
                 function walk(node) {
                     if (node.nodeType === 3) { // Text node
                         const text = node.nodeValue.trim();
@@ -180,34 +195,36 @@
                             textsToTranslate.push(text);
                         }
                     } else if (node.nodeType === 1) { // Element node
+                        // Logic to handle <a> tags
+                        if (node.tagName === 'A' && node.hasAttribute('href')) {
+                            const originalHref = node.getAttribute('href');
+                            const newHref = updateLink(originalHref, targetLanguage);
+                            node.setAttribute('href', newHref);
+                        }
+
                         for (let i = 0; i < node.childNodes.length; i++) {
                             walk(node.childNodes[i]);
                         }
                     }
                 }
 
-                // KORREKTUR: Starte die Traversierung vom temporären Container.
                 walk(tempContainer);
 
-                if (textsToTranslate.length === 0) {
-                    htmlOutput.textContent = htmlString;
-                    loader.classList.add('hidden');
-                    return;
+                if (textsToTranslate.length === 0 && tempContainer.innerHTML === htmlString) {
+                     htmlOutput.textContent = htmlString;
+                } else {
+                    const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
+                    const translatedTexts = await Promise.all(translationPromises);
+                    
+                    textNodes.forEach((node, index) => {
+                        const originalText = node.nodeValue;
+                        const trimmedOriginal = originalText.trim();
+                        const translatedText = translatedTexts[index] || '';
+                        node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
+                    });
+                    
+                    htmlOutput.textContent = tempContainer.innerHTML;
                 }
-
-                const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
-                const translatedTexts = await Promise.all(translationPromises);
-                
-                textNodes.forEach((node, index) => {
-                    const originalText = node.nodeValue;
-                    const trimmedOriginal = originalText.trim();
-                    const translatedText = translatedTexts[index] || '';
-                    node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
-                });
-                
-                // KORREKTUR: Gib nur den Inhalt des Containers zurück, um die originale Struktur zu erhalten.
-                const finalHtml = tempContainer.innerHTML;
-                htmlOutput.textContent = finalHtml;
 
             } catch (error) {
                 console.error('Übersetzung fehlgeschlagen:', error);
@@ -220,26 +237,15 @@
 
         async function translateText(text, targetLang) {
             const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-            
             try {
                 const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Netzwerkantwort war nicht ok: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Netzwerkantwort war nicht ok: ${response.statusText}`);
                 const data = await response.json();
-                
                 if (data && data[0] && data[0][0] && data[0][0][0]) {
-                    let translatedText = '';
-                    data[0].forEach(segment => {
-                        if (segment[0]) {
-                            translatedText += segment[0];
-                        }
-                    });
-                    return translatedText;
-                } else {
-                    console.warn('Übersetzungs-Snippet fehlgeschlagen, Original wird zurückgegeben:', data);
-                    return text;
+                    return data[0].map(segment => segment[0]).join('');
                 }
+                console.warn('Übersetzungs-Snippet fehlgeschlagen, Original wird zurückgegeben:', data);
+                return text;
             } catch (error) {
                  console.error('API-Aufruf für Snippet fehlgeschlagen:', text, error);
                  return text;
@@ -262,6 +268,7 @@
                 showError('Es gibt nichts zu kopieren.');
                 return;
             }
+            // Use execCommand as a fallback for iframe environments
             const textArea = document.createElement('textarea');
             textArea.value = content;
             textArea.style.position = 'fixed';
@@ -269,13 +276,9 @@
             textArea.focus();
             textArea.select();
             try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    copyBtn.textContent = 'Kopiert!';
-                    setTimeout(() => { copyBtn.textContent = 'Kopieren'; }, 2000);
-                } else {
-                    showError('Kopieren fehlgeschlagen.');
-                }
+                document.execCommand('copy');
+                copyBtn.textContent = 'Kopiert!';
+                setTimeout(() => { copyBtn.textContent = 'Kopieren'; }, 2000);
             } catch (err) {
                 showError('Kopieren fehlgeschlagen: ' + err);
             }
@@ -292,7 +295,6 @@
                 const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.style.display = 'none';
                 a.href = url;
                 a.download = 'translated.html';
                 document.body.appendChild(a);
@@ -318,4 +320,3 @@
     </script>
 </body>
 </html>
-
