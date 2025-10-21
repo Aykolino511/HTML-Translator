@@ -1,44 +1,217 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
+<!DOCTYPE html>\n<html lang="de" class="scroll-smooth"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AA - AykolinoApps - HTML Translator</title>
+    <title>MBUPS - ©AykolinoApps</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon-32x32.png" type="image/x-icon">
+
     <style>
+        /* Globale Stile & Animationen */
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f5f5f5;
+            overflow-x: hidden;
         }
-        .loader {
-            border-top-color: #3b82f6;
-            animation: spin 1s linear infinite;
+
+        .gradient-text {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .card {
+            background-color: rgba(23, 23, 23, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease-in-out;
         }
-        .drag-over {
-            border-color: #ec4899; /* pink-500 */
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(139, 92, 246, 0.5); /* Violet-500 */
         }
-        /* Custom scrollbar for webkit browsers */
-        textarea::-webkit-scrollbar,
-        pre::-webkit-scrollbar {
-            width: 8px;
+
+        .glow-effect {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 60%);
+            animation: rotateGlow 15s linear infinite;
         }
-        textarea::-webkit-scrollbar-track,
-        pre::-webkit-scrollbar-track {
-            background: #1f2937;
+
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        textarea::-webkit-scrollbar-thumb,
-        pre::-webkit-scrollbar-thumb {
-            background-color: #4b5563;
-            border-radius: 4px;
+
+        /* Scroll-in Animation */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header Stile */
+        .header {
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header-scrolled {
+            background-color: rgba(10, 10, 10, 0.7);
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- NEUE & VERBESSERTE Sprachauswahl Stile --- */
+        .lang-switcher-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background-color: #111827; /* bg-gray-900 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            width: 160px; /* Etwas breiter für die Flaggen */
+            z-index: 60;
+            overflow: hidden;
+            /* Animations-Eigenschaften */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
+        }
+
+        .lang-switcher-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* --- Logo Animationen --- */
+        .logo-utm { position: relative; width: 80px; height: 80px; }
+        .utm-center { position: absolute; width: 16px; height: 16px; background-color: #3b82f6; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: pulse 2s infinite ease-in-out; }
+        .utm-dot { position: absolute; width: 8px; height: 8px; background-color: #a78bfa; border-radius: 50%; top: 50%; left: 50%; margin: -4px; }
+        .utm-dot:nth-child(2) { animation: utm-orbit 4s infinite linear; animation-delay: 0s; }
+        .utm-dot:nth-child(3) { animation: utm-orbit 4s infinite linear; animation-delay: -1s; }
+        .utm-dot:nth-child(4) { animation: utm-orbit 4s infinite linear; animation-delay: -2s; }
+        .utm-dot:nth-child(5) { animation: utm-orbit 4s infinite linear; animation-delay: -3s; }
+        @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 20px 10px rgba(59, 130, 246, 0); } }
+        @keyframes utm-orbit { from { transform: rotate(0deg) translateX(30px) rotate(0deg); } to { transform: rotate(360deg) translateX(30px) rotate(-360deg); } }
+        .logo-html { width: 80px; height: 80px; display: flex; align-items: center; justify-content: space-between; font-size: 2.5rem; font-weight: bold; color: #ec4899; }
+        .html-arrow { font-size: 1.5rem; animation: html-translate 2s infinite ease-in-out; color: #f5f5f5; }
+        @keyframes html-translate { 0%, 100% { transform: translateX(0); opacity: 0.7; } 50% { transform: translateX(8px) scale(1.1); opacity: 1; } }
+        .logo-excel { width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .excel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; width: 30px; height: 40px; }
+        .excel-cell { width: 8px; height: 8px; background-color: #10b981; border-radius: 1px; opacity: 0.6; }
+        .excel-grid .excel-cell:nth-child(2) { background-color: #3b82f6; } .excel-grid .excel-cell:nth-child(5) { animation: excel-blink 2.5s infinite; animation-delay: 0.5s; } .excel-grid .excel-cell:nth-child(8) { background-color: #f97316; }
+        @keyframes excel-blink { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.4); opacity: 1; } }
+        .logo-an { width: 80px; height: 80px; background-color: rgba(255,255,255,0.05); border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; color: #facc15; overflow: hidden; }
+        .an-reel { animation: an-scroll-reel 4.5s infinite; animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+        .an-number-item { height: 80px; display: flex; justify-content: center; align-items: center; }
+        @keyframes an-scroll-reel { 0%, 25% { transform: translateY(0); } 30%, 55% { transform: translateY(-80px); } 60%, 85% { transform: translateY(-160px); } 90%, 100% { transform: translateY(-240px); } }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-300 flex items-center justify-center min-h-screen p-4">
+<body class="" style=""><div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden">
+        <div class="glow-effect"></div>
+    </div><div class="container mx-auto px-4 sm:px-6 lg:px-8"><nav id="main-header" class="header fixed top-0 left-0 w-full z-50 backdrop-blur-md border-b border-transparent transition-colors duration-300">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <a href="https://aykolino.de" class="text-2xl font-bold tracking-tight text-white">
+                        Aykolino<span class="gradient-text">Apps</span>
+                    </a>
+
+                    <!-- Desktop Navigation -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="https://uebermich.aykolino.de" class="text-gray-300 hover:text-white transition-colors" data-translate-key="navAbout">Über mich</a>
+                        <a href="mailto:ayko.tiedtke2@yahoo.de" class="text-gray-300 hover:text-white transition-colors" data-translate-key="navContact">Kontakt</a>
+                        
+                        <!-- Sprachauswahl -->
+                        <div class="relative lang-switcher">
+                            <button id="lang-switcher-button" class="flex items-center text-gray-300 hover:text-white transition-colors">
+                                <img id="current-flag-desktop" src="" alt="Language flag" class="w-5 h-auto mr-2 rounded-sm object-cover">
+                                <span id="current-lang-desktop">DE</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            </button>
+                            <div id="lang-switcher-dropdown" class="lang-switcher-dropdown p-2 space-y-1">
+                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('de', event)">
+                                    <img src="https://flagcdn.com/w40/de.png" alt="German flag" class="w-5 h-auto mr-3 rounded-sm">
+                                    <span>Deutsch</span>
+                                </a>
+                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('en', event)">
+                                    <img src="https://flagcdn.com/w40/gb.png" alt="British flag" class="w-5 h-auto mr-3 rounded-sm">
+                                    <span>English</span>
+                                </a>
+                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('fr', event)">
+                                    <img src="https://flagcdn.com/w40/fr.png" alt="French flag" class="w-5 h-auto mr-3 rounded-sm">
+                                    <span>Français</span>
+                                </a>
+                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('es', event)">
+                                     <img src="https://flagcdn.com/w40/es.png" alt="Spanish flag" class="w-5 h-auto mr-3 rounded-sm">
+                                    <span>Español</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-white">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden">
+                <a href="https://uebermich.aykolino.de" class="block py-3 px-4 text-sm text-gray-200 hover:bg-gray-800" data-translate-key="navAbout">Über mich</a>
+                <a href="mailto:ayko.tiedtke2@yahoo.de" class="block py-3 px-4 text-sm text-gray-200 hover:bg-gray-800" data-translate-key="navContact">Kontakt</a>
+                <div class="px-4 pt-3 pb-1 border-t border-gray-700">
+                    <p class="text-xs text-gray-400 mb-2" data-translate-key="languageLabelMobile">Sprache:</p>
+                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('de', event)">
+                         <img src="https://flagcdn.com/w40/de.png" alt="German flag" class="w-5 h-auto mr-3 rounded-sm"> Deutsch
+                    </a>
+                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('en', event)">
+                         <img src="https://flagcdn.com/w40/gb.png" alt="British flag" class="w-5 h-auto mr-3 rounded-sm"> English
+                    </a>
+                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('fr', event)">
+                         <img src="https://flagcdn.com/w40/fr.png" alt="French flag" class="w-5 h-auto mr-3 rounded-sm"> Français
+                    </a>
+                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('es', event)">
+                         <img src="https://flagcdn.com/w40/es.png" alt="Spanish flag" class="w-5 h-auto mr-3 rounded-sm"> Español
+                    </a>
+                </div>
+            </div>
+        </nav><main class="pt-24">
 
     <div class="w-full max-w-6xl mx-auto">
         <div class="bg-slate-800 rounded-xl shadow-2xl p-6 sm:p-8 border border-slate-700">
@@ -85,7 +258,7 @@
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
                             <svg class="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"></path>
                             </svg>
                         </div>
                     </div>
@@ -94,7 +267,7 @@
                             Übersetzen
                         </button>
                         <button id="download-btn" class="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                             Download
                         </button>
                     </div>
@@ -108,215 +281,171 @@
         </footer>
     </div>
 
-    <script>
-        const dropZone = document.getElementById('drop-zone');
-        const htmlInput = document.getElementById('html-input');
-        const htmlOutput = document.getElementById('html-output');
-        const languageSelect = document.getElementById('language-select');
-        const translateBtn = document.getElementById('translate-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        const loader = document.getElementById('loader');
-        const errorMessage = document.getElementById('error-message');
-        const copyBtn = document.getElementById('copy-btn');
-        const dropZonePlaceholder = dropZone.querySelector('span');
+    
 
-        // --- Drag & Drop Logic ---
-        dropZone.addEventListener('dragenter', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.type === "text/html") {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        htmlInput.value = event.target.result;
-                        updatePlaceholder();
-                        hideError();
-                    };
-                    reader.readAsText(file);
-                } else {
-                    showError("Bitte nur .html-Dateien ablegen.");
-                }
+
+</main><footer class="text-center py-10 mt-20 border-t border-gray-800">
+            <p class="text-gray-500" data-translate-key="footerText">
+                © <span id="year"></span> AykolinoApps. Mit Leidenschaft.
+            </p>
+            <p class="text-xs text-gray-600 mt-2" data-translate-key="footerDisclaimer">
+                Diese Domain wird nicht für gewerbliche Zwecke genutzt.
+            </p>
+        </footer></div><script>
+const translations = {
+    'de': {
+        langName: 'DE', flagUrl: 'https://flagcdn.com/w40/de.png',
+        navAbout: 'Über mich', navContact: 'Kontakt', languageLabelMobile: 'Sprache:',
+        footerText: '© <span id="year-footer"></span> AykolinoApps. Mit Leidenschaft.', footerDisclaimer: 'Diese Domain wird nicht für gewerbliche Zwecke genutzt.',
+        pageTitle: 'HTML Translator Pro', mainTitle: 'HTML Translator Pro',
+        mainSubtitle: 'Übersetzt Textinhalte und passt Domain-Endungen (.de, .com etc.) in Links automatisch an.',
+        originalCodeLabel: 'Original-Code',
+        inputPlaceholder: 'HTML-Datei hierher ziehen oder Code einfügen...',
+        inputPlaceholderSpan: 'HTML-Datei hierher ziehen oder Code einfügen',
+        translatedCodeLabel: 'Übersetzter Code', copyButton: 'Kopieren',
+        langSelectGerman: 'Deutsch', langSelectEnglish: 'Englisch', langSelectFrench: 'Französisch',
+        langSelectItalian: 'Italienisch', langSelectSpanish: 'Spanisch',
+        translateButton: 'Übersetzen', downloadButton: 'Download'
+    },
+    'en': {
+        langName: 'EN', flagUrl: 'https://flagcdn.com/w40/gb.png',
+        navAbout: 'About Me', navContact: 'Contact', languageLabelMobile: 'Language:',
+        footerText: '© <span id="year-footer"></span> AykolinoApps. With passion.', footerDisclaimer: 'This domain is not used for commercial purposes.',
+        pageTitle: 'HTML Translator Pro', mainTitle: 'HTML Translator Pro',
+        mainSubtitle: 'Translates text content and automatically adjusts domain endings (.de, .com etc.) in links.',
+        originalCodeLabel: 'Original Code',
+        inputPlaceholder: 'Drag and drop HTML file here or paste code...',
+        inputPlaceholderSpan: 'Drag and drop HTML file here or paste code',
+        translatedCodeLabel: 'Translated Code', copyButton: 'Copy',
+        langSelectGerman: 'German', langSelectEnglish: 'English', langSelectFrench: 'French',
+        langSelectItalian: 'Italian', langSelectSpanish: 'Spanish',
+        translateButton: 'Translate', downloadButton: 'Download'
+    },
+    'fr': {
+        langName: 'FR', flagUrl: 'https://flagcdn.com/w40/fr.png',
+        navAbout: 'À propos de moi', navContact: 'Contact', languageLabelMobile: 'Langue:',
+        footerText: '© <span id="year-footer"></span> AykolinoApps. Avec passion.', footerDisclaimer: "Ce domaine n'est pas utilisé à des fins commerciales.",
+        pageTitle: 'HTML Translator Pro', mainTitle: 'HTML Translator Pro',
+        mainSubtitle: 'Traduit le contenu textuel et ajuste automatiquement les extensions de domaine (.de, .com etc.) dans les liens.',
+        originalCodeLabel: 'Code Original',
+        inputPlaceholder: 'Glissez-déposez le fichier HTML ici ou collez le code...',
+        inputPlaceholderSpan: 'Glissez-déposez le fichier HTML ici ou collez le code',
+        translatedCodeLabel: 'Code Traduit', copyButton: 'Copier',
+        langSelectGerman: 'Allemand', langSelectEnglish: 'Anglais', langSelectFrench: 'Français',
+        langSelectItalian: 'Italien', langSelectSpanish: 'Espagnol',
+        translateButton: 'Traduire', downloadButton: 'Télécharger'
+    },
+    'es': {
+        langName: 'ES', flagUrl: 'https://flagcdn.com/w40/es.png',
+        navAbout: 'Sobre mí', navContact: 'Contacto', languageLabelMobile: 'Idioma:',
+        footerText: '© <span id="year-footer"></span> AykolinoApps. Con pasión.', footerDisclaimer: 'Este dominio no se utiliza con fines comerciales.',
+        pageTitle: 'HTML Translator Pro', mainTitle: 'HTML Translator Pro',
+        mainSubtitle: 'Traduce el contenido del texto y ajusta automáticamente las terminaciones de dominio (.de, .com etc.) en los enlaces.',
+        originalCodeLabel: 'Código Original',
+        inputPlaceholder: 'Arrastre y suelte el archivo HTML aquí o pegue el código...',
+        inputPlaceholderSpan: 'Arrastre y suelte el archivo HTML aquí o pegue el código',
+        translatedCodeLabel: 'Código Traducido', copyButton: 'Copiar',
+        langSelectGerman: 'Alemán', langSelectEnglish: 'Inglés', langSelectFrench: 'Francés',
+        langSelectItalian: 'Italiano', langSelectSpanish: 'Español',
+        translateButton: 'Traducir', downloadButton: 'Descargar'
+    }
+};
+
+function addTranslateKeys() {
+    const textToKeyMap = {};
+    const deTranslations = translations.de;
+    for (const key in deTranslations) {
+        const value = deTranslations[key];
+        if (typeof value === 'string' && value.length > 2 && !value.includes('<')) {
+            textToKeyMap[value.trim()] = key;
+        }
+    }
+
+    document.querySelectorAll('[placeholder]').forEach(el => {
+        const placeholderText = el.getAttribute('placeholder')?.trim();
+        if (placeholderText && textToKeyMap[placeholderText]) {
+            el.setAttribute('data-translate-key-placeholder', textToKeyMap[placeholderText]);
+        }
+    });
+
+    if (textToKeyMap[document.title.trim()]) {
+         document.documentElement.setAttribute('data-translate-key-title', textToKeyMap[document.title.trim()]);
+    }
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(node => {
+        const text = node.nodeValue.trim();
+        if (textToKeyMap[text]) {
+            const parent = node.parentElement;
+            if (parent && !parent.closest('script, style') && !parent.hasAttribute('data-translate-key')) {
+                 const hasOnlyThisText = Array.from(parent.childNodes).every(
+                    child => child === node || (child.nodeType === Node.TEXT_NODE && !child.nodeValue.trim())
+                 );
+                 if (hasOnlyThisText) {
+                    parent.setAttribute('data-translate-key', textToKeyMap[text]);
+                 }
             }
+        }
+    });
+}
+
+function setLanguage(lang, event) {
+    if (event) event.preventDefault();
+    const langPack = translations[lang];
+    if (!langPack) return;
+    localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
+
+    const titleKey = document.documentElement.getAttribute('data-translate-key-title');
+    if (titleKey && langPack[titleKey]) document.title = langPack[titleKey];
+    
+    document.querySelectorAll('[data-translate-key]').forEach(el => {
+        const key = el.getAttribute('data-translate-key');
+        if (langPack[key]) el.innerHTML = langPack[key];
+    });
+
+    document.querySelectorAll('[data-translate-key-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-translate-key-placeholder');
+        if (langPack[key]) el.setAttribute('placeholder', langPack[key]);
+    });
+
+    const currentLangDesktop = document.getElementById('current-lang-desktop');
+    if (currentLangDesktop) currentLangDesktop.textContent = langPack.langName;
+    const currentFlagDesktop = document.getElementById('current-flag-desktop');
+    if (currentFlagDesktop) {
+        currentFlagDesktop.src = langPack.flagUrl;
+        currentFlagDesktop.alt = `Flag of ${lang}`;
+    }
+    
+    const yearSpan = document.getElementById('year') || document.getElementById('year-footer');
+    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+    document.getElementById('lang-switcher-dropdown')?.classList.remove('open');
+    document.getElementById('mobile-menu')?.classList.add('hidden');
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    addTranslateKeys();
+    const savedLang = localStorage.getItem('language') || 'de';
+    window.setLanguage(savedLang);
+
+    document.getElementById('lang-switcher-button')?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        document.getElementById('lang-switcher-dropdown')?.classList.toggle('open');
+    });
+    window.addEventListener('click', () => document.getElementById('lang-switcher-dropdown')?.classList.remove('open'));
+    document.getElementById('mobile-menu-button')?.addEventListener('click', () => document.getElementById('mobile-menu')?.classList.toggle('hidden'));
+    
+    const header = document.getElementById('main-header');
+    if(header) {
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('header-scrolled', window.scrollY > 10);
         });
-        
-        htmlInput.addEventListener('input', updatePlaceholder);
-        function updatePlaceholder() {
-             dropZonePlaceholder.style.display = htmlInput.value.length > 0 ? 'none' : 'flex';
-        }
-        updatePlaceholder();
-
-        // --- Translation Logic ---
-        translateBtn.addEventListener('click', handleTranslation);
-
-        async function handleTranslation() {
-            const htmlString = htmlInput.value;
-            const targetLanguage = languageSelect.value;
-            if (!htmlString.trim()) {
-                showError("Bitte geben Sie HTML-Code ein oder ziehen Sie eine Datei per Drag & Drop.");
-                return;
-            }
-
-            loader.classList.remove('hidden');
-            htmlOutput.textContent = '';
-            hideError();
-
-            try {
-                const tempContainer = document.createElement('div');
-                tempContainer.innerHTML = htmlString;
-
-                const textNodes = [];
-                const textsToTranslate = [];
-                
-                // Helper function to update link TLDs
-                function updateLink(url, targetLang) {
-                    const tldMap = { de: '.de', en: '.com', fr: '.fr', it: '.it', es: '.es' };
-                    const targetTld = tldMap[targetLang];
-                    if (!targetTld) return url;
-
-                    // Regex to find common TLDs at the end of a domain.
-                    // Ensures that only absolute URLs are changed.
-                    const tldRegex = /\.(de|com|fr|it|es|org|net|io|co|uk)(?=\/|$)/;
-                    if (url.startsWith('http://') || url.startsWith('https://')) {
-                        return url.replace(tldRegex, targetTld);
-                    }
-                    return url;
-                }
-
-                function walk(node) {
-                    if (node.nodeType === 3) { // Text node
-                        const text = node.nodeValue.trim();
-                        if (text.length > 0 && node.parentElement.nodeName !== 'SCRIPT' && node.parentElement.nodeName !== 'STYLE') {
-                            textNodes.push(node);
-                            textsToTranslate.push(text);
-                        }
-                    } else if (node.nodeType === 1) { // Element node
-                        // Logic to handle <a> tags
-                        if (node.tagName === 'A' && node.hasAttribute('href')) {
-                            const originalHref = node.getAttribute('href');
-                            const newHref = updateLink(originalHref, targetLanguage);
-                            node.setAttribute('href', newHref);
-                        }
-
-                        for (let i = 0; i < node.childNodes.length; i++) {
-                            walk(node.childNodes[i]);
-                        }
-                    }
-                }
-
-                walk(tempContainer);
-
-                if (textsToTranslate.length === 0 && tempContainer.innerHTML === htmlString) {
-                     htmlOutput.textContent = htmlString;
-                } else {
-                    const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
-                    const translatedTexts = await Promise.all(translationPromises);
-                    
-                    textNodes.forEach((node, index) => {
-                        const originalText = node.nodeValue;
-                        const trimmedOriginal = originalText.trim();
-                        const translatedText = translatedTexts[index] || '';
-                        node.nodeValue = originalText.replace(trimmedOriginal, translatedText);
-                    });
-                    
-                    htmlOutput.textContent = tempContainer.innerHTML;
-                }
-
-            } catch (error) {
-                console.error('Übersetzung fehlgeschlagen:', error);
-                showError("Übersetzung fehlgeschlagen: " + error.message);
-                htmlOutput.textContent = htmlString;
-            } finally {
-                loader.classList.add('hidden');
-            }
-        }
-
-        async function translateText(text, targetLang) {
-            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Netzwerkantwort war nicht ok: ${response.statusText}`);
-                const data = await response.json();
-                if (data && data[0] && data[0][0] && data[0][0][0]) {
-                    return data[0].map(segment => segment[0]).join('');
-                }
-                console.warn('Übersetzungs-Snippet fehlgeschlagen, Original wird zurückgegeben:', data);
-                return text;
-            } catch (error) {
-                 console.error('API-Aufruf für Snippet fehlgeschlagen:', text, error);
-                 return text;
-            }
-        }
-
-        // --- UI Helper Functions ---
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-        }
-        function hideError() {
-            errorMessage.textContent = '';
-            errorMessage.classList.add('hidden');
-        }
-
-        copyBtn.addEventListener('click', () => {
-            const content = htmlOutput.textContent;
-            if (!content || !content.trim()) {
-                showError('Es gibt nichts zu kopieren.');
-                return;
-            }
-            // Use execCommand as a fallback for iframe environments
-            const textArea = document.createElement('textarea');
-            textArea.value = content;
-            textArea.style.position = 'fixed';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                copyBtn.textContent = 'Kopiert!';
-                setTimeout(() => { copyBtn.textContent = 'Kopieren'; }, 2000);
-            } catch (err) {
-                showError('Kopieren fehlgeschlagen: ' + err);
-            }
-            document.body.removeChild(textArea);
-        });
-        
-        downloadBtn.addEventListener('click', () => {
-            const content = htmlOutput.textContent;
-            if (!content || !content.trim()) {
-                showError("Es gibt nichts zum Herunterladen.");
-                return;
-            }
-            try {
-                const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'translated.html';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (error) {
-                showError("Download fehlgeschlagen: " + error.message);
-                console.error("Download-Fehler:", error);
-            }
-        });
-        
-        // Marquee Title Effect
-        (function() {
-            const originalTitle = document.title + " ";
-            let titleText = originalTitle;
-            function marquee() {
-                titleText = titleText.substring(1, titleText.length) + titleText.substring(0, 1);
-                document.title = titleText;
-            }
-            setInterval(marquee, 300);
-        })();
-    </script>
-</body>
-</html>
+    }
+});
+// Make setLanguage globally available for onclick attributes
+window.setLanguage = setLanguage;
+</script></body></html>
