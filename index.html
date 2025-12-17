@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Setze hier deinen neuen Titel -->
-    <title>>© AykolinoApps - HTML-Translator</title>
+    <title>AykolinoApps - HTML-Translator Pro</title>
 
-    <!-- Tailwind CSS (Wichtig für das Layout) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Inter (Wichtig für die Schriftart) -->
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Du kannst hier dein eigenes Favicon verlinken -->
+    <!-- Favicon (Platzhalter) -->
     <link rel="icon" href="favicon-32x32.png" type="image/x-icon">
 
     <style>
-        /* --- ÜBERNOMMENE GLOBALE STILE & FARBEN --- */
+        /* --- GLOBALE STILE & FARBEN --- */
         body {
             font-family: 'Inter', sans-serif;
-            /* Hintergrund- und Textfarbe der Website */
-            /* HINZUGEFÜGT: !important, um die Hintergrundfarbe von eingefügtem Code zu überschreiben */
-            background-color: #0a0a0a !important;
+            background-color: #0a0a0a !important; /* Dunkler Hintergrund erzwungen */
             color: #f5f5f5;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* Verlauf-Text (genutzt in der Navigation) */
+        /* Verlauf-Text */
         .gradient-text {
             background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
             -webkit-background-clip: text;
@@ -46,6 +46,8 @@
             height: 200%;
             background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 60%);
             animation: rotateGlow 15s linear infinite;
+            z-index: -10;
+            pointer-events: none;
         }
 
         @keyframes rotateGlow {
@@ -53,44 +55,38 @@
             to { transform: rotate(360deg); }
         }
 
-        /* --- ÜBERNOMMENE HEADER & SPRACHAUSWAHL STILE --- */
+        /* Header Animation */
         .header {
             animation: fadeInDown 0.8s ease-out;
         }
 
         .header-scrolled {
-            background-color: rgba(10, 10, 10, 0.7);
-            border-bottom-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Stile für das Sprachauswahl-Dropdown */
+        /* Dropdown Styles */
         .lang-switcher-dropdown {
             position: absolute;
             top: 100%;
             right: 0;
             margin-top: 10px;
-            background-color: #111827; /* bg-gray-900 */
-            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #111827;
+            border-radius: 0.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
             width: 160px; 
             z-index: 60;
-            overflow: hidden;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
-            transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
+            transition: all 0.2s ease-out;
         }
 
         .lang-switcher-dropdown.open {
@@ -99,132 +95,7 @@
             transform: translateY(0);
         }
 
-        /* FIX (Version 4): Die CSS-Regel 'main { padding-top: 10rem; }' 
-          wurde von hier entfernt. Der Abstand wird jetzt direkt 
-          als Tailwind-Klasse 'pt-40' (10rem) zum <main>-Tag hinzugefügt.
-        */
-
-    </style>
-</head>
-<body>
-
-    <!-- ÜBERNOMMEN: Background Glow -->
-    <div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden">
-        <div class="glow-effect"></div>
-    </div>
-
-    <!-- ÜBERNOMMEN: Main Container -->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-
-        <!-- ÜBERNOMMEN: Header / Navigation -->
-        <nav id="main-header" class="header fixed top-0 left-0 w-full z-50 backdrop-blur-md border-b border-transparent transition-colors duration-300">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-20">
-                    <a href="https://aykolino.de" class="text-2xl font-bold tracking-tight text-white">
-                        Aykolino<span class="gradient-text">Apps</span>
-                    </a>
-
-                    <!-- Desktop Navigation -->
-                    <div class="hidden md:flex items-center space-x-8">
-                        <a href="https://uebermich.aykolino.de" class="text-gray-300 hover:text-white transition-colors" data-translate-key="navAbout">Über mich</a>
-                        <a href="mailto:ayko.tiedtke2@yahoo.de" class="text-gray-300 hover:text-white transition-colors" data-translate-key="navContact">Kontakt</a>
-                        
-                        <!-- Sprachauswahl -->
-                        <div class="relative lang-switcher">
-                            <button id="lang-switcher-button" class="flex items-center text-gray-300 hover:text-white transition-colors">
-                                <img id="current-flag-desktop" src="" alt="Language flag" class="w-5 h-auto mr-2 rounded-sm object-cover">
-                                <span id="current-lang-desktop">DE</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                            </button>
-                            <div id="lang-switcher-dropdown" class="lang-switcher-dropdown p-2 space-y-1">
-                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('de', event)">
-                                    <img src="https://flagcdn.com/w40/de.png" alt="German flag" class="w-5 h-auto mr-3 rounded-sm">
-                                    <span>Deutsch</span>
-                                </a>
-                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('en', event)">
-                                    <img src="https://flagcdn.com/w40/gb.png" alt="British flag" class="w-5 h-auto mr-3 rounded-sm">
-                                    <span>English</span>
-                                </a>
-                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('fr', event)">
-                                    <img src="https://flagcdn.com/w40/fr.png" alt="French flag" class="w-5 h-auto mr-3 rounded-sm">
-                                    <span>Français</span>
-                                </a>
-                                <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('es', event)">
-                                     <img src="https://flagcdn.com/w40/es.png" alt="Spanish flag" class="w-5 h-auto mr-3 rounded-sm">
-                                    <span>Español</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Mobile Menu Button -->
-                    <div class="md:hidden">
-                        <button id="mobile-menu-button" class="text-white">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden">
-                <a href="https://uebermich.aykolino.de" class="block py-3 px-4 text-sm text-gray-200 hover:bg-gray-800" data-translate-key="navAbout">Über mich</a>
-                <a href="mailto:ayko.tiedtke2@yahoo.de" class="block py-3 px-4 text-sm text-gray-200 hover:bg-gray-800" data-translate-key="navContact">Kontakt</a>
-                <div class="px-4 pt-3 pb-1 border-t border-gray-700">
-                    <p class="text-xs text-gray-400 mb-2" data-translate-key="languageLabelMobile">Sprache:</p>
-                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('de', event)">
-                         <img src="https://flagcdn.com/w40/de.png" alt="German flag" class="w-5 h-auto mr-3 rounded-sm"> Deutsch
-                    </a>
-                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('en', event)">
-                         <img src="https://flagcdn.com/w40/gb.png" alt="British flag" class="w-5 h-auto mr-3 rounded-sm"> English
-                    </a>
-                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('fr', event)">
-                         <img src="https://flagcdn.com/w40/fr.png" alt="French flag" class="w-5 h-auto mr-3 rounded-sm"> Français
-                    </a>
-                    <a href="#" class="flex items-center w-full py-2 text-sm text-gray-200 hover:bg-gray-800" onclick="setLanguage('es', event)">
-                         <img src="https://flagcdn.com/w40/es.png" alt="Spanish flag" class="w-5 h-auto mr-3 rounded-sm"> Español
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- 
-        *************************************************
-        * *
-        * NEUER FIX (Version 5): "SPACER-BLOCK"       *
-        * *
-        * Dieser Block ist exakt so hoch wie die        *
-        * Navigationsleiste (h-20 = 5rem / 80px).     *
-        * Er ist unsichtbar und drückt allen Inhalt,  *
-        * der danach kommt, physisch nach unten.      *
-        * *
-        ************************************************* -->
-        <div class="h-20"></div>
-        <!-- *********************************************** -->
-
-
-        <!-- 
-        *************************************************
-        * HIER DEINEN NEUEN SEITENINHALT EINFÜGEN     *
-        * (Am besten direkt in diesen <main> Tag)     *
-        * *
-        ************************************************* -->
-        
-        <!-- 
-          HINWEIS: Die Klasse 'pt-40' (entspricht 10rem / 160px) 
-          wurde hier ENTFERNT, da der Spacer-Block jetzt den Abstand regelt.
-        -->
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AA - AykolinoApps - HTML Translator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        /* Translator Specific Styles */
         .loader {
             border-top-color: #3b82f6;
             animation: spin 1s linear infinite;
@@ -233,582 +104,639 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
         .drag-over {
-            border-color: #ec4899; /* pink-500 */
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+            border-color: #ec4899 !important; /* pink-500 */
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            background-color: rgba(236, 72, 153, 0.05) !important;
         }
-        /* Custom scrollbar for webkit browsers */
+
+        /* Scrollbars */
         textarea::-webkit-scrollbar,
         pre::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
         textarea::-webkit-scrollbar-track,
         pre::-webkit-scrollbar-track {
             background: #1f2937;
+            border-radius: 4px;
         }
         textarea::-webkit-scrollbar-thumb,
         pre::-webkit-scrollbar-thumb {
             background-color: #4b5563;
             border-radius: 4px;
         }
+        textarea::-webkit-scrollbar-thumb:hover,
+        pre::-webkit-scrollbar-thumb:hover {
+            background-color: #6b7280;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-300 flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="w-full max-w-6xl mx-auto">
-        <div class="bg-slate-800 rounded-xl shadow-2xl p-6 sm:p-8 border border-slate-700">
-            <header class="text-center mb-8">
-                <h1 class="text-3xl sm:text-4xl font-bold text-white">HTML Translator Pro</h1>
-                <p class="text-slate-400 mt-2">Übersetzt Text. Bildnamen und Shortcodes [..] bleiben 100% erhalten.</p>
-            </header>
+    <!-- Background Glow -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="glow-effect"></div>
+    </div>
 
-            <main>
+    <!-- Header / Navigation -->
+    <nav id="main-header" class="header fixed top-0 left-0 w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="https://aykolino.de" class="text-2xl font-bold tracking-tight text-white hover:opacity-90 transition-opacity">
+                    Aykolino<span class="gradient-text">Apps</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="https://uebermich.aykolino.de" class="text-gray-300 hover:text-white transition-colors font-medium" data-translate-key="navAbout">Über mich</a>
+                    <a href="mailto:ayko.tiedtke2@yahoo.de" class="text-gray-300 hover:text-white transition-colors font-medium" data-translate-key="navContact">Kontakt</a>
+                    
+                    <!-- Sprachauswahl -->
+                    <div class="relative lang-switcher">
+                        <button id="lang-switcher-button" class="flex items-center text-gray-300 hover:text-white transition-colors py-2">
+                            <img id="current-flag-desktop" src="https://flagcdn.com/w40/de.png" alt="DE" class="w-5 h-auto mr-2 rounded-sm object-cover shadow-sm">
+                            <span id="current-lang-desktop" class="font-medium">DE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 opacity-70" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                        <div id="lang-switcher-dropdown" class="lang-switcher-dropdown p-1 space-y-0.5">
+                            <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('de', event)">
+                                <img src="https://flagcdn.com/w40/de.png" alt="DE" class="w-5 h-auto mr-3 rounded-sm"> <span>Deutsch</span>
+                            </a>
+                            <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('en', event)">
+                                <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-5 h-auto mr-3 rounded-sm"> <span>English</span>
+                            </a>
+                            <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('fr', event)">
+                                <img src="https://flagcdn.com/w40/fr.png" alt="FR" class="w-5 h-auto mr-3 rounded-sm"> <span>Français</span>
+                            </a>
+                            <a href="#" class="flex items-center w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition-colors" onclick="setLanguage('es', event)">
+                                 <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-5 h-auto mr-3 rounded-sm"> <span>Español</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-white p-2 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-b border-gray-800 absolute w-full left-0 top-20 shadow-xl">
+            <a href="https://uebermich.aykolino.de" class="block py-4 px-6 text-sm text-gray-200 hover:bg-gray-800 border-b border-gray-800" data-translate-key="navAbout">Über mich</a>
+            <a href="mailto:ayko.tiedtke2@yahoo.de" class="block py-4 px-6 text-sm text-gray-200 hover:bg-gray-800" data-translate-key="navContact">Kontakt</a>
+            <div class="px-6 py-4 bg-gray-900/50">
+                <p class="text-xs text-gray-500 uppercase tracking-wider mb-3 font-semibold" data-translate-key="languageLabelMobile">Sprache</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="flex items-center py-2 px-3 rounded bg-gray-800 hover:bg-gray-700 text-sm text-gray-300" onclick="setLanguage('de', event)">
+                         <img src="https://flagcdn.com/w40/de.png" alt="DE" class="w-4 h-auto mr-2"> DE
+                    </button>
+                    <button class="flex items-center py-2 px-3 rounded bg-gray-800 hover:bg-gray-700 text-sm text-gray-300" onclick="setLanguage('en', event)">
+                         <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-4 h-auto mr-2"> EN
+                    </button>
+                    <button class="flex items-center py-2 px-3 rounded bg-gray-800 hover:bg-gray-700 text-sm text-gray-300" onclick="setLanguage('fr', event)">
+                         <img src="https://flagcdn.com/w40/fr.png" alt="FR" class="w-4 h-auto mr-2"> FR
+                    </button>
+                    <button class="flex items-center py-2 px-3 rounded bg-gray-800 hover:bg-gray-700 text-sm text-gray-300" onclick="setLanguage('es', event)">
+                         <img src="https://flagcdn.com/w40/es.png" alt="ES" class="w-4 h-auto mr-2"> ES
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Spacer für Fixed Header -->
+    <div class="h-24"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="w-full max-w-6xl mx-auto">
+            <div class="bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-2xl p-6 sm:p-8 border border-slate-700/50">
+                
+                <header class="text-center mb-10">
+                    <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3">HTML Translator <span class="text-blue-500">Pro</span></h1>
+                    <p class="text-slate-400 text-lg max-w-2xl mx-auto">Übersetzt den Text, behält die Struktur. Intelligenter Schutz für Variablen, Bilder und Shortcodes.</p>
+                </header>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                     <!-- Input Section -->
-                    <div class="flex flex-col">
-                        <label for="html-input" class="text-lg font-semibold mb-3 text-white">Original-Code</label>
-                        <div id="drop-zone" class="relative w-full h-96 flex-grow bg-slate-900 text-slate-300 border-2 border-dashed border-slate-600 rounded-lg p-4 transition-all duration-300">
-                            <textarea id="html-input" class="absolute inset-0 w-full h-full bg-transparent text-slate-300 border-none rounded-lg p-4 focus:outline-none resize-none" placeholder="HTML-Datei hierher ziehen oder Code einfügen..."></textarea>
-                            <div class="absolute inset-0 flex items-center justify-center text-slate-500 pointer-events-none">
-                               <span>HTML-Datei hierher ziehen oder Code einfügen</span>
+                    <div class="flex flex-col group">
+                        <label for="html-input" class="text-sm font-semibold mb-2 text-slate-300 uppercase tracking-wide">Original HTML</label>
+                        <div id="drop-zone" class="relative w-full h-80 flex-grow bg-slate-900/50 text-slate-300 border-2 border-dashed border-slate-600 rounded-xl p-4 transition-all duration-300 hover:border-blue-500 hover:bg-slate-900">
+                            <textarea id="html-input" class="absolute inset-0 w-full h-full bg-transparent text-slate-300 border-none rounded-xl p-4 focus:outline-none resize-none font-mono text-sm leading-relaxed z-10" placeholder="HTML-Code hier einfügen oder Datei ablegen..."></textarea>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 pointer-events-none transition-opacity duration-200" id="drop-zone-text">
+                                <svg class="w-12 h-12 mb-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                <span class="text-sm">Drag & Drop oder Einfügen</span>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Output Section -->
                     <div class="flex flex-col">
-                        <label for="html-output" class="text-lg font-semibold mb-3 text-white">Übersetzter Code</label>
-                        <div id="output-container" class="relative w-full h-96 flex-grow bg-slate-900 border-2 border-slate-700 rounded-lg">
-                            <pre class="w-full h-full overflow-auto"><code id="html-output" class="language-html whitespace-pre-wrap p-4 block"></code></pre>
-                            <div id="loader" class="absolute inset-0 bg-slate-900 bg-opacity-75 flex items-center justify-center hidden rounded-lg">
-                                <div class="loader ease-linear rounded-full border-8 border-t-8 border-slate-600 h-20 w-20"></div>
-                            </div>
-                            <button id="copy-btn" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded-md transition duration-200 opacity-50 hover:opacity-100">Kopieren</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Controls Section -->
-                <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="relative w-full sm:w-64">
-                        <select id="language-select" class="w-full appearance-none bg-slate-700 text-white border-2 border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200">
-                            <option value="de">Deutsch</option>
-                            <option value="en">Englisch</option>
-                            <option value="fr">Französisch</option>
-                            <option value="it">Italienisch</option>
-                            <option value="es">Spanisch</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                            <svg class="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                        <button id="translate-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-105 shadow-lg">
-                            Übersetzen
-                        </button>
-                        <button id="download-btn" class="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                            Download
-                        </button>
-                    </div>
-                </div>
-                 <div id="error-message" class="mt-4 text-center text-red-400 font-semibold hidden min-h-[1.5rem]"></div>
-            </main>
-        </div>
-        <footer class="mt-6 text-slate-500 text-sm flex justify-between items-center px-2">
-            <div>Version 1.20</div>
-            <div>©AykolinoApps</div>
-        </footer>
-    </div>
-
-    <script>
-        const dropZone = document.getElementById('drop-zone');
-        const htmlInput = document.getElementById('html-input');
-        const htmlOutput = document.getElementById('html-output');
-        const languageSelect = document.getElementById('language-select');
-        const translateBtn = document.getElementById('translate-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        const loader = document.getElementById('loader');
-        const errorMessage = document.getElementById('error-message');
-        const copyBtn = document.getElementById('copy-btn');
-        const dropZonePlaceholder = dropZone.querySelector('span');
-
-        // --- Drag & Drop Logic ---
-        dropZone.addEventListener('dragenter', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.type === "text/html") {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        htmlInput.value = event.target.result;
-                        updatePlaceholder();
-                        hideError();
-                    };
-                    reader.readAsText(file);
-                } else {
-                    showError("Bitte nur .html-Dateien ablegen.");
-                }
-            }
-        });
-        
-        htmlInput.addEventListener('input', updatePlaceholder);
-        function updatePlaceholder() {
-             dropZonePlaceholder.style.display = htmlInput.value.length > 0 ? 'none' : 'flex';
-        }
-        updatePlaceholder();
-
-        // --- Translation Logic ---
-        translateBtn.addEventListener('click', handleTranslation);
-
-        async function handleTranslation() {
-            const htmlString = htmlInput.value;
-            const targetLanguage = languageSelect.value;
-            if (!htmlString.trim()) {
-                showError("Bitte geben Sie HTML-Code ein oder ziehen Sie eine Datei per Drag & Drop.");
-                return;
-            }
-
-            loader.classList.remove('hidden');
-            htmlOutput.textContent = '';
-            hideError();
-
-            try {
-                const tempContainer = document.createElement('div');
-                tempContainer.innerHTML = htmlString;
-
-                const textNodes = []; // Speichert jetzt Objekte: { node, placeholders, originalTextWithPlaceholders }
-                const textsToTranslate = []; // Speichert Texte mit Platzhaltern ODER null
-                
-                // Helper function to update link TLDs
-                function updateLink(url, targetLang) {
-                    const tldMap = { de: '.de', en: '.com', fr: '.fr', it: '.it', es: '.es' };
-                    const targetTld = tldMap[targetLang];
-                    if (!targetTld) return url;
-
-                    const tldRegex = /\.(de|com|fr|it|es|org|net|io|co|uk)(?=\/|$)/;
-                    if (url.startsWith('http://') || url.startsWith('https://')) {
-                        return url.replace(tldRegex, targetTld);
-                    }
-                    return url;
-                }
-
-                function walk(node) {
-                    if (node.nodeType === 3) { // Text node
-                        const originalText = node.nodeValue;
-                        const parentTag = node.parentElement.nodeName;
-
-                        if (parentTag === 'SCRIPT' || parentTag === 'STYLE' || originalText.trim().length === 0) {
-                            return;
-                        }
-
-                        const placeholders = {};
-                        let placeholderIndex = 0;
-                        let textToSend = originalText;
-                        
-                        const imageFileRegex = /[\w.-]+\.(jpg|jpeg|png|webp)/gi;
-                        
-                        // 1. BILDER SCHÜTZEN (z.B. "bild.jpg")
-                        textToSend = textToSend.replace(imageFileRegex, (match) => {
-                            const placeholder = `__PLACEHOLDER_${placeholderIndex}__`;
-                            placeholders[placeholder] = match;
-                            placeholderIndex++;
-                            return placeholder;
-                        });
-
-                        // 2. SHORTCODES, die BILD-PLATZHALTER enthalten, SCHÜTZEN 
-                        const shortcodeWithImagePHRegex = /\[[^\]]*?__PLACEHOLDER_\d+__[^\]]*\]/g;
-                        textToSend = textToSend.replace(shortcodeWithImagePHRegex, (match) => {
-                            const placeholder = `__PLACEHOLDER_${placeholderIndex}__`;
-                            placeholders[placeholder] = match;
-                            placeholderIndex++;
-                            return placeholder;
-                        });
-                        
-                        // 3. Rein strukturelle Shortcodes schützen (optional, aber sicherer)
-                        const structureShortcodeRegex = /\[\/?(hr|col|row|separator)[\s\]]/gi;
-                         textToSend = textToSend.replace(structureShortcodeRegex, (match) => {
-                            const placeholder = `__PLACEHOLDER_${placeholderIndex}__`;
-                            placeholders[placeholder] = match;
-                            placeholderIndex++;
-                            return placeholder;
-                        });
-                        
-                        textNodes.push({ node: node, placeholders: placeholders, originalTextWithPlaceholders: textToSend });
-
-                        const cleanedText = textToSend.replace(/__PLACEHOLDER_(\d+)__/gi, '');
-                        const testText = cleanedText.replace(/&nbsp;|\u00A0/g, ' ').trim();
-                        
-                        if (testText.length > 0) {
-                             textsToTranslate.push(textToSend);
-                        } else {
-                            textsToTranslate.push(null);
-                        }
-
-                    } else if (node.nodeType === 1) { // Element node
-                        
-                        if (node.tagName === 'A' && node.hasAttribute('href')) {
-                            const originalHref = node.getAttribute('href');
-                            const newHref = updateLink(originalHref, targetLanguage);
-                            node.setAttribute('href', newHref);
-                        }
-
-                        if (node.tagName === 'IMG') {
-                            return; 
-                        }
-
-                        for (let i = 0; i < node.childNodes.length; i++) {
-                            walk(node.childNodes[i]);
-                        }
-                    }
-                }
-
-                walk(tempContainer);
-
-                if (textsToTranslate.length === 0) {
-                     htmlOutput.textContent = tempContainer.innerHTML;
-                } else {
-                    const translationPromises = textsToTranslate.map(text => {
-                        if (text === null) {
-                            return Promise.resolve(null);
-                        }
-                        return translateText(text, targetLanguage);
-                    });
-
-                    const translationResults = await Promise.all(translationPromises);
-                    
-                    textNodes.forEach((nodeInfo, index) => {
-                        const { node, placeholders, originalTextWithPlaceholders } = nodeInfo;
-                        
-                        let translationResult = translationResults[index];
-                        let finalText = (translationResult === null) ? originalTextWithPlaceholders : translationResult;
-
-                        // KORREKTUR v1.20: Rekursive Ersetzung mit while-Schleife
-                        if (Object.keys(placeholders).length > 0) {
-                            const placeholderRegexTest = /__\s*PLACEHOLDER_(\d+)\s*__/i; // Nur zum Testen (nicht global)
+                        <label for="html-output" class="text-sm font-semibold mb-2 text-slate-300 uppercase tracking-wide flex justify-between items-center">
+                            <span>Übersetzter Code</span>
+                            <span id="output-lang-label" class="text-xs text-blue-400"></span>
+                        </label>
+                        <div id="output-container" class="relative w-full h-80 flex-grow bg-slate-900 border border-slate-700 rounded-xl overflow-hidden shadow-inner">
+                            <pre class="w-full h-full overflow-auto custom-scrollbar"><code id="html-output" class="language-html whitespace-pre-wrap p-4 block font-mono text-sm leading-relaxed text-slate-300"></code></pre>
                             
-                            while (placeholderRegexTest.test(finalText)) {
-                                finalText = finalText.replace(/__\s*PLACEHOLDER_(\d+)\s*__/gi, (match, p1) => {
-                                    const originalPlaceholderKey = `__PLACEHOLDER_${p1}__`;
-                                    if (placeholders.hasOwnProperty(originalPlaceholderKey)) {
-                                        return placeholders[originalPlaceholderKey];
-                                    }
-                                    return match; // Fallback
-                                });
-                            }
-                        }
-                        
-                        node.nodeValue = finalText;
-                    });
-                    
-                    htmlOutput.textContent = tempContainer.innerHTML;
-                }
+                            <!-- Loading Overlay -->
+                            <div id="loader" class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center hidden z-20">
+                                <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-600 h-12 w-12 mb-4"></div>
+                                <p class="text-blue-400 font-medium animate-pulse">Übersetze Inhalte...</p>
+                            </div>
 
-            } catch (error) {
-                console.error('Übersetzung fehlgeschlagen:', error);
-                showError("Übersetzung fehlgeschlagen: " + error.message);
-                htmlOutput.textContent = htmlString;
-            } finally {
-                loader.classList.add('hidden');
-            }
-        }
+                            <!-- Small Copy Button Removed here -->
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Controls -->
+                <div class="mt-8 pt-8 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="relative w-full sm:w-72">
+                        <label class="absolute -top-2.5 left-3 bg-slate-800 px-1 text-xs text-blue-400 font-semibold">Zielsprache</label>
+                        <select id="language-select" class="w-full appearance-none bg-slate-900 text-white border border-slate-600 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer">
+                            <option value="de">Deutsch (German)</option>
+                            <option value="en">Englisch (English)</option>
+                            <option value="fr">Französisch (Français)</option>
+                            <option value="it">Italienisch (Italiano)</option>
+                            <option value="es">Spanisch (Español)</option>
+                            <option value="nl">Niederländisch (Dutch)</option>
+                            <option value="pl">Polnisch (Polish)</option>
+                            <option value="tr">Türkisch (Turkish)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                            <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                        </div>
+                    </div>
 
+                    <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                        <button id="translate-btn" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg shadow-blue-900/20 active:scale-95">
+                            Jetzt Übersetzen
+                        </button>
+                        <!-- Pink Copy Button (Moved here, replaced Download) -->
+                        <button id="copy-btn" class="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            Kopieren
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="error-message" class="mt-6 p-4 rounded-lg bg-red-900/30 border border-red-800 text-red-200 text-center hidden animate-pulse text-sm"></div>
+            </div>
+            
+            <div class="mt-6 text-center">
+                 <p class="text-slate-500 text-xs">Hinweis: Dies ist ein client-seitiges Tool. Ihre Daten werden nicht dauerhaft gespeichert.</p>
+            </div>
+        </div>
+    </main>
 
-        async function translateText(text, targetLang) {
-            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Netzwerkantwort war nicht ok: ${response.statusText}`);
-                const data = await response.json();
-                if (data && data[0] && data[0][0] && data[0][0][0]) {
-                    return data[0].map(segment => segment[0]).join('');
-                }
-                console.warn('Übersetzungs-Snippet fehlgeschlagen, Original wird zurückgegeben:', data);
-                return text;
-            } catch (error) {
-                 console.error('API-Aufruf für Snippet fehlgeschlagen:', text, error);
-                 return text;
-            }
-        }
+    <!-- Footer -->
+    <footer class="text-center py-8 border-t border-gray-800 bg-gray-900/50 mt-auto">
+        <p class="text-gray-500 text-sm" data-translate-key="footerText">
+            © <span id="year">2024</span> AykolinoApps. Mit Leidenschaft.
+        </p>
+        <p class="text-xs text-gray-600 mt-2" data-translate-key="footerDisclaimer">
+            Diese Domain wird nicht für gewerbliche Zwecke genutzt.
+        </p>
+    </footer>
 
-        // --- UI Helper Functions ---
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-        }
-        function hideError() {
-            errorMessage.textContent = '';
-            errorMessage.classList.add('hidden');
-        }
-
-        copyBtn.addEventListener('click', () => {
-            const content = htmlOutput.textContent;
-            if (!content || !content.trim()) {
-                showError('Es gibt nichts zu kopieren.');
-                return;
-            }
-            const textArea = document.createElement('textarea');
-            textArea.value = content;
-            textArea.style.position = 'fixed';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                copyBtn.textContent = 'Kopiert!';
-                setTimeout(() => { copyBtn.textContent = 'Kopieren'; }, 2000);
-            } catch (err) {
-                showError('Kopieren fehlgeschlagen: ' + err);
-            }
-            document.body.removeChild(textArea);
-        });
-        
-        downloadBtn.addEventListener('click', () => {
-            const content = htmlOutput.textContent;
-            if (!content || !content.trim()) {
-                showError("Es gibt nichts zum Herunterladen.");
-                return;
-            }
-            try {
-                const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'translated.html';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (error) {
-                showError("Download fehlgeschlagen: " + error.message);
-                console.error("Download-Fehler:", error);
-            }
-        });
-        
-        // Marquee Title Effect
-        (function() {
-            const originalTitle = document.title + " ";
-            let titleText = originalTitle;
-            function marquee() {
-                titleText = titleText.substring(1, titleText.length) + titleText.substring(0, 1);
-                document.title = titleText;
-            }
-            setInterval(marquee, 300);
-        })();
-    </script>
-</body>
-</html>
-
-
-        <!-- *********************************************** -->
-        <!-- * ENDE DES NEUEN INHALTS             * -->
-        <!-- *********************************************** -->
-
-
-        <!-- ÜBERNOMMEN: Footer -->
-        <footer class="text-center py-10 mt-20 border-t border-gray-800">
-            <p class="text-gray-500" data-translate-key="footerText">
-                © <span id="year"></span> AykolinoApps. Mit Leidenschaft.
-            </p>
-            <p class="text-xs text-gray-600 mt-2" data-translate-key="footerDisclaimer">
-                Diese Domain wird nicht für gewerbliche Zwecke genutzt.
-            </p>
-        </footer>
-    </div>
-
-    <!-- ÜBERNOMMEN: JavaScript für Sprachauswahl & Header -->
     <script>
-        // --- Translations-Objekt ---
-        // HINWEIS: Du kannst hier Einträge entfernen, wenn sie auf der neuen Seite nicht benötigt werden
-        // (z.B. utmTitle, htmlDesc, etc.), aber die 'nav'-Einträge und 'footer'-Einträge sind wichtig.
+        // --- Translations Data ---
         const translations = {
             'de': {
-                langName: 'DE',
-                flagUrl: 'https://flagcdn.com/w40/de.png',
-                navAbout: 'Über mich',
-                navContact: 'Kontakt',
-                languageLabelMobile: 'Sprache:',
-                // --- Alte Einträge (können entfernt oder für neue Inhalte genutzt werden) ---
-                heroTitle: 'Innovative <span class="gradient-text">Web-Tools</span> für <a href="https://usedparts.mercedes-benz.de/startseite/" style="color: white; text-decoration: underline;">MBUPS</a>',
-                heroSubtitle1: 'Hey! Ich bin Ayko, MBUPS-Praktikant der nützliche und einfach zu bedienende Web-Apps für euer Unternehmen entwickelt.',
-                heroSubtitle2: 'Meine Tools helfen dir, Arbeitszeit zu sparen und deinen Workflow zu automatisieren – ganz ohne komplizierte Technik.',
-                toolsTitle: 'Meine MBUPS-Tools',
-                utmTitle: 'UTM-Generator',
-                utmDesc: 'Erstellt schnell und fehlerfrei UTM-Parameter für präzises Kampagnen-Tracking.',
-                htmlTitle: 'HTML-Translator',
-                htmlDesc: 'Übersetzt Texte innerhalb von HTML-Code, ohne die Struktur zu zerstören.',
-                excelTitle: 'Excel-Comparison',
-                excelDesc: 'Vergleicht zwei Excel-Tabellen und hebt die Unterschiede deutlich hervor.',
-                anTitle: 'Articlenumber-Generator',
-                anDesc: 'Generiert einzigartige und formatierte Artikelnummern nach definierbaren Mustern.',
-                viewProject: 'Ansehen →',
-                // --- Footer Einträge (wichtig) ---
+                langName: 'DE', flagUrl: 'https://flagcdn.com/w40/de.png',
+                navAbout: 'Über mich', navContact: 'Kontakt', languageLabelMobile: 'Sprache:',
                 footerText: '© <span id="year-footer"></span> AykolinoApps. Mit Leidenschaft.',
                 footerDisclaimer: 'Diese Domain wird nicht für gewerbliche Zwecke genutzt.'
             },
             'en': {
-                langName: 'EN',
-                flagUrl: 'https://flagcdn.com/w40/gb.png',
-                navAbout: 'About Me',
-                navContact: 'Contact',
-                languageLabelMobile: 'Language:',
-                heroTitle: 'Innovative <span class="gradient-text">Web Tools</span> for <a href="https://usedparts.mercedes-benz.de/startseite/" style="color: white; text-decoration: underline;">MBUPS</a>',
-                heroSubtitle1: "Hey! I'm Ayko, an MBUPS intern developing useful and easy-to-use web apps for your company.",
-                heroSubtitle2: 'My tools help you save time and automate your workflow - without any complicated technology.',
-                toolsTitle: 'My MBUPS-Tools',
-                utmTitle: 'UTM-Generator',
-                utmDesc: 'Quickly and accurately creates UTM parameters for precise campaign tracking.',
-                htmlTitle: 'HTML-Translator',
-                htmlDesc: 'Translates text within HTML code without breaking the structure.',
-                excelTitle: 'Excel-Comparison',
-                excelDesc: 'Compares two Excel sheets and clearly highlights the differences.',
-                anTitle: 'Article Number-Generator',
-                anDesc: 'Generates unique and formatted article numbers according to definable patterns.',
-                viewProject: 'View →',
+                langName: 'EN', flagUrl: 'https://flagcdn.com/w40/gb.png',
+                navAbout: 'About Me', navContact: 'Contact', languageLabelMobile: 'Language:',
                 footerText: '© <span id="year-footer"></span> AykolinoApps. With passion.',
                 footerDisclaimer: 'This domain is not used for commercial purposes.'
             },
             'fr': {
-                langName: 'FR',
-                flagUrl: 'https://flagcdn.com/w40/fr.png',
-                navAbout: 'À propos de moi',
-                navContact: 'Contact',
-                languageLabelMobile: 'Langue:',
-                heroTitle: 'Outils Web <span class="gradient-text">Innovants</span> pour <a href="https://usedparts.mercedes-benz.de/startseite/" style="color: white; text-decoration: underline;">MBUPS</a>',
-                heroSubtitle1: "Salut ! Je suis Ayko, stagiaire chez MBUPS, et je développe des applications web utiles et simples d'utilisation pour votre entreprise.",
-                heroSubtitle2: "Mes outils vous aident à gagner du temps et à automatiser votre flux de travail, sans aucune technologie compliquée.",
-                toolsTitle: 'Mes outils MBUPS',
-                utmTitle: 'Générateur UTM',
-                utmDesc: 'Crée rapidement et sans erreur des paramètres UTM pour un suivi de campagne précis.',
-                htmlTitle: 'Traducteur HTML',
-                htmlDesc: 'Traduit le texte dans le code HTML sans en détruire la structure.',
-                excelTitle: 'Comparateur Excel',
-                excelDesc: 'Compare deux feuilles Excel et met clairement en évidence les différences.',
-                anTitle: "Générateur de numéros d'article",
-                anDesc: "Génère des numéros d'article uniques et formatés selon des modèles définissables.",
-                viewProject: 'Voir →',
+                langName: 'FR', flagUrl: 'https://flagcdn.com/w40/fr.png',
+                navAbout: 'À propos de moi', navContact: 'Contact', languageLabelMobile: 'Langue:',
                 footerText: '© <span id="year-footer"></span> AykolinoApps. Avec passion.',
                 footerDisclaimer: "Ce domaine n'est pas utilisé à des fins commerciales."
             },
             'es': {
-                langName: 'ES',
-                flagUrl: 'https://flagcdn.com/w40/es.png',
-                navAbout: 'Sobre mí',
-                navContact: 'Contacto',
-                languageLabelMobile: 'Idioma:',
-                heroTitle: 'Herramientas Web <span class="gradient-text">Innovadoras</span> para <a href="https://usedparts.mercedes-benz.de/startseite/" style="color: white; text-decoration: underline;">MBUPS</a>',
-                heroSubtitle1: '¡Hola! Soy Ayko, un pasante de MBUPS que desarrolla aplicaciones web útiles y fáciles de usar para su empresa.',
-                heroSubtitle2: 'Mis herramientas le ayudan a ahorrar tiempo y automatizar su flujo de trabajo, sin tecnología complicada.',
-                toolsTitle: 'Mis herramientas de MBUPS',
-                utmTitle: 'Generador UTM',
-                utmDesc: 'Crea parámetros UTM de forma rápida y sin errores para un seguimiento preciso de campañas.',
-                htmlTitle: 'Traductor HTML',
-                htmlDesc: 'Traduce texto dentro del código HTML sin romper la estructura.',
-                excelTitle: 'Comparador de Excel',
-                excelDesc: 'Compara dos hojas de Excel y resalta claramente las diferencias.',
-                anTitle: 'Generador de números de artículo',
-                anDesc: 'Genera números de artículo únicos y formateados según patrones definibles.',
-                viewProject: 'Ver →',
+                langName: 'ES', flagUrl: 'https://flagcdn.com/w40/es.png',
+                navAbout: 'Sobre mí', navContact: 'Contacto', languageLabelMobile: 'Idioma:',
                 footerText: '© <span id="year-footer"></span> AykolinoApps. Con pasión.',
                 footerDisclaimer: 'Este dominio no se utiliza con fines comerciales.'
             }
         };
 
-        // --- Haupt-Logik (unverändert übernommen) ---
+        // --- Core Application Logic ---
         document.addEventListener('DOMContentLoaded', () => {
-
-            // Elemente abrufen
+            
+            // --- UI Elements ---
+            const dropZone = document.getElementById('drop-zone');
+            const htmlInput = document.getElementById('html-input');
+            const dropZoneText = document.getElementById('drop-zone-text');
+            const htmlOutput = document.getElementById('html-output');
+            const languageSelect = document.getElementById('language-select');
+            const translateBtn = document.getElementById('translate-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
+            
+            // --- Navigation Logic ---
             const langSwitcherButton = document.getElementById('lang-switcher-button');
             const langSwitcherDropdown = document.getElementById('lang-switcher-dropdown');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const header = document.getElementById('main-header');
 
-            // Funktion zum Setzen der Sprache
+            // Set Year
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // --- Drag & Drop & Input ---
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('drag-over');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('drag-over');
+                });
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type === "text/html" || file.name.endsWith('.html') || file.name.endsWith('.htm') || file.type === "text/plain") {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            htmlInput.value = event.target.result;
+                            updatePlaceholder();
+                            hideError();
+                        };
+                        reader.readAsText(file);
+                    } else {
+                        showError("Bitte nur HTML- oder Textdateien verwenden.");
+                    }
+                }
+            });
+
+            htmlInput.addEventListener('input', updatePlaceholder);
+
+            function updatePlaceholder() {
+                if (htmlInput.value.length > 0) {
+                    dropZoneText.style.display = 'none';
+                    dropZone.classList.add('bg-slate-900');
+                    dropZone.classList.remove('bg-slate-900/50');
+                } else {
+                    dropZoneText.style.display = 'flex';
+                    dropZone.classList.remove('bg-slate-900');
+                    dropZone.classList.add('bg-slate-900/50');
+                }
+            }
+
+            // --- Translation Logic (THE FIXES) ---
+            translateBtn.addEventListener('click', handleTranslation);
+
+            async function handleTranslation() {
+                const htmlString = htmlInput.value;
+                const targetLanguage = languageSelect.value;
+                
+                if (!htmlString.trim()) {
+                    showError("Bitte geben Sie HTML-Code ein.");
+                    return;
+                }
+
+                loader.classList.remove('hidden');
+                htmlOutput.textContent = '';
+                hideError();
+
+                try {
+                    // Create a DOM Parser instead of simple innerHTML to be safer with structure
+                    // But for simple fragments, a div is still easiest for iteration.
+                    const tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = htmlString;
+
+                    const textNodes = []; 
+                    const textsToTranslate = [];
+                    
+                    // Regex Definitions for protection
+                    // 1. Image Files (common extensions)
+                    const imageFileRegex = /(?:^|\s|["'])[\w-]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp|ico)(?:$|\s|["'])/gi;
+                    // 2. Shortcodes [foo]
+                    const shortcodeRegex = /\[\s*\/?[^\]]+?\s*\]/g;
+                    // 3. Template Variables: {{var}}, {var}, %var%, ${var}
+                    const variableRegex = /\{\{.*?\}\}|\{.*?\}/g; // Common template engines (Liquid, Handlebars, React)
+                    const percentVarRegex = /%.*?%/g; // Windows/Batch style or some CMS
+                    const dollarVarRegex = /\$\{[^}]+\}/g; // JS Template Literals
+                    // 4. Email Addresses
+                    const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+
+                    function walk(node) {
+                        if (node.nodeType === 3) { // Text Node
+                            const originalText = node.nodeValue;
+                            
+                            // Important: Skip if empty or just whitespace?
+                            // No! Whitespace between spans (<span>A</span> <span>B</span>) is a text node.
+                            // We must preserve it.
+                            
+                            // Skip only if parent is script/style
+                            const parentTag = node.parentElement ? node.parentElement.nodeName : '';
+                            if (parentTag === 'SCRIPT' || parentTag === 'STYLE' || parentTag === 'CODE' || parentTag === 'PRE') {
+                                return;
+                            }
+                            
+                            if (!originalText.trim()) {
+                                // Node is purely whitespace. Keep it as is, do not translate.
+                                return;
+                            }
+
+                            // EXTRACT WHITESPACE
+                            const leadingSpace = originalText.match(/^\s*/)[0];
+                            const trailingSpace = originalText.match(/\s*$/)[0];
+                            let textToProcess = originalText.trim();
+
+                            const placeholders = {};
+                            let placeholderIndex = 0;
+
+                            function addPlaceholder(match) {
+                                const key = `__PH${placeholderIndex}__`; // Shorter key is better for API
+                                placeholders[key] = match;
+                                placeholderIndex++;
+                                return key;
+                            }
+
+                            // PROTECT EVERYTHING
+                            textToProcess = textToProcess.replace(imageFileRegex, (match) => {
+                                // Careful not to replace quotes if captured, but regex above captures pure filename context mostly
+                                // Let's keep it simple: if it matches the pattern, protect the whole match.
+                                return addPlaceholder(match);
+                            });
+                            textToProcess = textToProcess.replace(emailRegex, addPlaceholder);
+                            textToProcess = textToProcess.replace(variableRegex, addPlaceholder);
+                            textToProcess = textToProcess.replace(percentVarRegex, addPlaceholder);
+                            textToProcess = textToProcess.replace(dollarVarRegex, addPlaceholder);
+                            textToProcess = textToProcess.replace(shortcodeRegex, addPlaceholder);
+
+                            // Store for reconstruction
+                            textNodes.push({ 
+                                node: node, 
+                                leadingSpace: leadingSpace,
+                                trailingSpace: trailingSpace,
+                                placeholders: placeholders, 
+                                originalProcessedText: textToProcess 
+                            });
+
+                            textsToTranslate.push(textToProcess);
+
+                        } else if (node.nodeType === 1) { // Element Node
+                            // Link Adaptation
+                            if (node.tagName === 'A' && node.hasAttribute('href')) {
+                                const originalHref = node.getAttribute('href');
+                                const newHref = updateLink(originalHref, targetLanguage);
+                                node.setAttribute('href', newHref);
+                            }
+                            
+                            // Do not translate content of these tags
+                            if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'CODE' || node.tagName === 'PRE') {
+                                return;
+                            }
+
+                            for (let i = 0; i < node.childNodes.length; i++) {
+                                walk(node.childNodes[i]);
+                            }
+                        }
+                    }
+
+                    walk(tempContainer);
+
+                    if (textsToTranslate.length > 0) {
+                        // Translate in batches or all at once? 
+                        // Google API GET limit is around 2k-5k chars. Better to do it simply for now.
+                        // For a robust app, one should batch. Here we assume small-medium inputs.
+                        
+                        // We translate each text node individually to preserve mapping.
+                        // Parallel requests might hit rate limits, but for this demo it's okay.
+                        // Optimization: Use Promise.all
+                        
+                        const translationPromises = textsToTranslate.map(text => translateText(text, targetLanguage));
+                        const translationResults = await Promise.all(translationPromises);
+
+                        textNodes.forEach((data, index) => {
+                            let translatedText = translationResults[index] || data.originalProcessedText;
+
+                            // Restore Placeholders
+                            // We iterate keys to ensure we catch them all.
+                            // Reverse order usually not needed if keys are unique.
+                            for (const [key, val] of Object.entries(data.placeholders)) {
+                                // Use a global replace for the key
+                                // Handle potential spaces inserted by translator (e.g. __ PH0 __)
+                                // The key is __PH\d+__
+                                // Regex: __\s*PH(\d+)\s*__
+                                const phId = key.match(/\d+/)[0];
+                                const looseRegex = new RegExp(`__\\s*PH${phId}\\s*__`, 'gi');
+                                translatedText = translatedText.replace(looseRegex, val);
+                            }
+
+                            // Restore Whitespace
+                            data.node.nodeValue = data.leadingSpace + translatedText + data.trailingSpace;
+                        });
+                    }
+
+                    htmlOutput.textContent = tempContainer.innerHTML;
+
+                } catch (error) {
+                    console.error(error);
+                    showError("Fehler bei der Verarbeitung: " + error.message);
+                    htmlOutput.textContent = htmlString; // Fallback
+                } finally {
+                    loader.classList.add('hidden');
+                }
+            }
+
+            function updateLink(url, targetLang) {
+                const tldMap = { 'de': '.de', 'en': '.com', 'fr': '.fr', 'it': '.it', 'es': '.es', 'nl': '.nl', 'pl': '.pl' };
+                const targetTld = tldMap[targetLang];
+                if (!targetTld) return url;
+
+                // Simple Regex to replace TLD at end of domain
+                try {
+                    const urlObj = new URL(url); // Try parsing as URL
+                    const hostname = urlObj.hostname;
+                    const parts = hostname.split('.');
+                    if (parts.length > 1) {
+                         const lastPart = parts[parts.length - 1];
+                         // Only replace if it looks like a standard TLD (2-3 chars) or common ones
+                         if (lastPart.length >= 2 && !url.includes('localhost') && !url.includes('127.0.0.1')) {
+                             const newHostname = hostname.substring(0, hostname.lastIndexOf('.')) + targetTld;
+                             return url.replace(hostname, newHostname);
+                         }
+                    }
+                    return url;
+                } catch (e) {
+                    // Not a full URL (relative), return as is
+                    return url;
+                }
+            }
+
+            async function translateText(text, targetLang) {
+                if (!text || !text.trim()) return text;
+                
+                // Using the specific single endpoint
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+                
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("API Limit or Network Error");
+                    const data = await response.json();
+                    
+                    // The result is often an array of sentences. Join them.
+                    if (data && data[0]) {
+                        return data[0].map(s => s[0]).join('');
+                    }
+                    return text;
+                } catch (e) {
+                    console.warn("Translation failed for chunk:", text, e);
+                    return text; // Fallback to original
+                }
+            }
+
+            // --- UI Helpers ---
+            function showError(msg) {
+                errorMessage.textContent = msg;
+                errorMessage.classList.remove('hidden');
+            }
+            function hideError() {
+                errorMessage.classList.add('hidden');
+            }
+
+            // --- NEW: Robust Copy Function ---
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = htmlOutput.textContent;
+                if (!textToCopy) return;
+
+                // Funktion für Feedback-Animation
+                const showSuccess = () => {
+                    const originalContent = copyBtn.innerHTML;
+                    const originalClasses = copyBtn.className;
+                    
+                    // Change Text and Icon
+                    copyBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Kopiert!`;
+                    // Optional: Change color to green temporarily to indicate success
+                    copyBtn.classList.remove('bg-pink-600', 'hover:bg-pink-700');
+                    copyBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalContent;
+                        // Restore original classes (remove green, add pink)
+                        copyBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        copyBtn.classList.add('bg-pink-600', 'hover:bg-pink-700');
+                    }, 2000);
+                };
+
+                // Fallback Funktion
+                const fallbackCopyTextToClipboard = (text) => {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    
+                    // Style anpassen, damit es nicht sichtbar ist, aber im Viewport bleibt
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "0";
+                    
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showSuccess();
+                        } else {
+                            throw new Error('Fallback copy failed');
+                        }
+                    } catch (err) {
+                        showError("Kopieren fehlgeschlagen: " + err);
+                    }
+
+                    document.body.removeChild(textArea);
+                };
+
+                // Versuche moderne API, sonst Fallback
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        showSuccess();
+                    }).catch(err => {
+                        console.warn("Clipboard API failed, trying fallback...", err);
+                        fallbackCopyTextToClipboard(textToCopy);
+                    });
+                } else {
+                    fallbackCopyTextToClipboard(textToCopy);
+                }
+            });
+
+            // --- Language Switching (App UI) ---
             window.setLanguage = function(lang, event) {
                 if (event) event.preventDefault();
                 if (!translations[lang]) return;
 
-                // Sprache im Local Storage speichern und auf HTML-Tag anwenden
                 localStorage.setItem('language', lang);
-                document.documentElement.lang = lang;
-
-                // Alle Elemente mit `data-translate-key` durchgehen und übersetzen
+                
+                // Update Text
                 document.querySelectorAll('[data-translate-key]').forEach(el => {
                     const key = el.getAttribute('data-translate-key');
-                    if (translations[lang][key]) {
-                        el.innerHTML = translations[lang][key];
-                    }
+                    if (translations[lang][key]) el.innerHTML = translations[lang][key];
                 });
 
-                // Jahreszahl im Footer aktualisieren (nach Übersetzung)
-                const yearSpan = document.getElementById('year') || document.getElementById('year-footer');
-                if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+                // Update UI
+                const currentLangLabel = document.getElementById('current-lang-desktop');
+                const currentFlag = document.getElementById('current-flag-desktop');
+                if (currentLangLabel) currentLangLabel.textContent = translations[lang].langName;
+                if (currentFlag) currentFlag.src = translations[lang].flagUrl;
 
-                // Anzeige der Sprachauswahl aktualisieren
-                const currentLangDesktop = document.getElementById('current-lang-desktop');
-                const currentFlagDesktop = document.getElementById('current-flag-desktop');
-                if (currentLangDesktop) currentLangDesktop.textContent = translations[lang].langName;
-                if (currentFlagDesktop) {
-                    currentFlagDesktop.src = translations[lang].flagUrl;
-                    currentFlagDesktop.alt = `Flag of ${lang}`;
-                }
+                // Close menus
+                if (langSwitcherDropdown) langSwitcherDropdown.classList.remove('open');
+                if (mobileMenu) mobileMenu.classList.add('hidden');
+            };
 
-                // Dropdown und mobiles Menü schließen
-                if(langSwitcherDropdown) langSwitcherDropdown.classList.remove('open');
-                if(mobileMenu) mobileMenu.classList.add('hidden');
-            }
-
-            // Gespeicherte Sprache beim Laden der Seite anwenden
+            // Init UI Language
             const savedLang = localStorage.getItem('language') || 'de';
-            window.setLanguage(savedLang);
+            setLanguage(savedLang);
 
-            // --- Event Listeners ---
-
-            // Sprachauswahl Dropdown (Desktop)
-            if (langSwitcherButton) {
-                langSwitcherButton.addEventListener('click', (event) => {
-                    event.stopPropagation();
+            // Toggle Dropdown
+            if(langSwitcherButton) {
+                langSwitcherButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     langSwitcherDropdown.classList.toggle('open');
                 });
             }
-
-            // Klick ausserhalb des Dropdowns schliesst es
             window.addEventListener('click', () => {
-                if (langSwitcherDropdown && langSwitcherDropdown.classList.contains('open')) {
-                    langSwitcherDropdown.classList.remove('open');
-                }
+                if(langSwitcherDropdown) langSwitcherDropdown.classList.remove('open');
             });
-            
-            // Mobiles Menü
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
-                });
+            if(mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
             }
-
-            // Header Scroll-Effekt
+            
+            // Header Scroll
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 10) {
-                    header.classList.add('header-scrolled');
-                } else {
-                    header.classList.remove('header-scrolled');
-                }
+                if (window.scrollY > 10) header.classList.add('header-scrolled');
+                else header.classList.remove('header-scrolled');
             });
-
         });
     </script>
 </body>
 </html>
-
-
-
-
